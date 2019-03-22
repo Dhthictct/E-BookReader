@@ -69,7 +69,7 @@ public class BookPageFactory {
         mContentParaIndex = book.getContentParaIndexs();
 
         marginWidth = (int) (mWidth / 30f);
-        marginHeight = (int) (mHeight / 60f);
+        marginHeight = (int) (mHeight / 25f);
         mVisibleWidth = mWidth - marginWidth * 2;
         mVisibleHeight = mHeight - marginHeight * 2;
 
@@ -174,8 +174,8 @@ public class BookPageFactory {
     public List<Bitmap> updatePagesByContent(int nextParaIndex) {//, float powerPercent) {
         mReadInfo.nextParaIndex = nextParaIndex;
 
-        if (mReadInfo.nextParaIndex == 1)    //第一章和卷名一起处理
-            mReadInfo.nextParaIndex = 0;
+        //if (mReadInfo.nextParaIndex == 1)    //第一章和卷名一起处理
+        // mReadInfo.nextParaIndex = 0;
         reset();
 
         mReadInfo.isLastNext = true;//设置为直接往后读
@@ -283,8 +283,8 @@ public class BookPageFactory {
     private String findContent(int paraIndex) {    //找到当前page对应的目录
         for (int i = 0; i < mContentParaIndex.size() - 1; i++) {
             if (paraIndex >= mContentParaIndex.get(i) && paraIndex < mContentParaIndex.get(i + 1)) {
-                if (i == 0)
-                    i = 1;   //合并卷名和第一章
+                //if (i == 0)
+                //i = 1;   //合并卷名和第一章
 
                 return mContents.get(i);
             }

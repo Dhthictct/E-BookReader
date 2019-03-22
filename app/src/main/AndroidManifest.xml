@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.ebookreader.ReadingActivity" />
+        <activity android:name=".ReadingActivity" />
 
     </application>
 

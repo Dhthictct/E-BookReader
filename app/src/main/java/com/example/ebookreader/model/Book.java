@@ -14,7 +14,7 @@ public class Book {
     //格式化文本，将文本以段落为单位保存
     private List<String> mParagraphList;
 
-    //目录集合(卷/章/回/集等)
+    //目录集合
     private List<String> mBookContents;
     //目录对应的在段落集合中的索引
     private List<Integer> mContentParaIndexs;

@@ -57,9 +57,10 @@
             <TextView
                 android:id="@+id/pop_auto_change_text_view"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="根据光线自动调节亮度"
+                android:layout_weight="1"
+                android:text="Automatically adjust brightness according to light"
+                android:textAllCaps="false"
                 android:textColor="#000000"
                 android:textSize="18sp" />
 
@@ -88,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/btn_theme"
-                android:text="复古" />
+                android:text="ANCIENT" />
 
             <Button
                 android:id="@+id/usual_btn"
@@ -97,7 +98,7 @@
                 android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/btn_theme"
-                android:text="常规" />
+                android:text="NORMAL" />
 
             <Button
                 android:id="@+id/eye_btn"
@@ -106,7 +107,7 @@
                 android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/btn_theme"
-                android:text="护眼" />
+                android:text="EYE\" />
 
             <Button
                 android:id="@+id/night_btn"
@@ -115,7 +116,7 @@
                 android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/btn_theme"
-                android:text="夜间"
+                android:text="NIGHT"
                 android:textColor="@color/text_color_night" />
 
         </LinearLayout>
@@ -163,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/btn_filp_mode"
-                android:text="仿真翻页" />
+                android:text="SIMULATION" />
 
             <Button
                 android:id="@+id/flip_cover_btn"
@@ -172,7 +173,7 @@
                 android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/btn_filp_mode"
-                android:text="覆盖翻页" />
+                android:text="COVER" />
 
             <Button
                 android:id="@+id/flip_no_effect_btn"
@@ -181,7 +182,7 @@
                 android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/btn_filp_mode"
-                android:text="无效果" />
+                android:text="NONE" />
 
 
         </LinearLayout>

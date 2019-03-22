@@ -8,12 +8,14 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.example.ebookreader.model.Book;
 import com.example.ebookreader.model.BookLab;
@@ -120,7 +122,30 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
                 mContentPopup.setAnimationStyle(R.style.pop_window_anim_style);
                 mContentPopup.showAsDropDown(mBottomBar, 0, -mContentPopup.getHeight());
                 break;
+            case R.id.btnLabel:
+                saveLabel();
+                Toast.makeText(mContext, "Labels have been added, long press to display the list of labels", Toast.LENGTH_SHORT).show();
+                break;
         }
+    }
+
+    //数据库存取书签
+    private void saveLabel() {
+        Time time = new Time();
+        time.setToNow(); // 取得系统时间。
+        String timeStr = time.year + "/" + time.month + "/" + time.monthDay;
+
+        ReadInfo readInfo = mBookPageFactory.getReadInfo();
+        String objectStr = SaveHelper.serObject(readInfo);
+
+        Label label = new Label();
+        label.setBookId(mBookId);
+        label.setDetails(mBookPageFactory.getCurContent());
+        label.setProgress(mBookPageFactory.getPercentStr());
+        label.setTime(timeStr);
+        label.setPrePageOver(mFlipView.isPrePageOver());
+        label.setReadInfoStr(objectStr);
+        label.save();
     }
 
     private void initDatas() {
