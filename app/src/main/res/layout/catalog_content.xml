@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pop_content_linear_layout"
+    android:id="@+id/content_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -17,10 +17,11 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:background="@color/stroke_color_dark_normal" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/pop_contents_recycle_view"
+        android:id="@+id/contents_recycle_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"

@@ -10,6 +10,7 @@ public abstract class BasicsFragmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setScreen();
         setContentView(R.layout.activity_fragment);
 
         FragmentManager fm = getSupportFragmentManager();
