@@ -14,7 +14,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="catalog" />
+        android:background="@drawable/btn_bottom_bar"
+        android:text="catalog"
+        android:textAllCaps="true"
+        android:textSize="8sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnSetting"
@@ -22,7 +26,11 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="6dp"
         android:layout_weight="1"
-        android:text="setting" />
+        android:background="@drawable/btn_bottom_bar"
+        android:text="setting"
+        android:textAllCaps="true"
+        android:textSize="8sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnFont"
@@ -30,7 +38,11 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="6dp"
         android:layout_weight="1"
-        android:text="font" />
+        android:background="@drawable/btn_bottom_bar"
+        android:text="font"
+        android:textAllCaps="true"
+        android:textSize="8sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnLabel"
@@ -38,7 +50,11 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="6dp"
         android:layout_weight="1"
-        android:text="label" />
+        android:background="@drawable/btn_bottom_bar"
+        android:text="label"
+        android:textAllCaps="true"
+        android:textSize="8sp"
+        android:textStyle="bold" />
 
 </LinearLayout>
 
