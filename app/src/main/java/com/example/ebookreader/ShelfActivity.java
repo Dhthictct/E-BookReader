@@ -1,6 +1,7 @@
 package com.example.ebookreader;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -10,18 +11,25 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Environment.getExternalStorageDirectory;
 
 public class ShelfActivity extends BasicsFragmentActivity implements View.OnClickListener {
+    private static int BUFFER_SIZE = 1000000;
+
     @Override
     protected Fragment createFragment() {
         return new ShelfFragment();
@@ -44,32 +52,11 @@ public class ShelfActivity extends BasicsFragmentActivity implements View.OnClic
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String mainDir = getFilesDir().getAbsolutePath();
+//        //String mainDir = getFilesDir().getAbsolutePath();
+        String dir = getExternalStorageDirectory().getAbsolutePath();
+        copyAssets(this, "text", dir + "/text");
+        copyAssets(this, "image", dir + "/image");
 
-    }
-
-
-    public boolean getPer() {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (!Settings.System.canWrite(this)) {
-                    Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse(Settings.ACTION_MANAGE_WRITE_SETTINGS));
-                    intent.setData(Uri.parse("package:" + this.getPackageName()));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    this.startActivity(intent);
-                }
-                if (ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    }, 102);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 
     @Override
@@ -113,6 +100,60 @@ public class ShelfActivity extends BasicsFragmentActivity implements View.OnClic
         }
     }
 
+    public static void copy(Context context, String zipPath, String targetPath) {
+        if (TextUtils.isEmpty(zipPath) || TextUtils.isEmpty(targetPath)) {
+            return;
+        }
+        File dest = new File(targetPath);
+        dest.getParentFile().mkdirs();
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new BufferedInputStream(context.getAssets().open(zipPath));
+            out = new BufferedOutputStream(new FileOutputStream(dest));
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int length = 0;
+            while ((length = in.read(buffer)) != -1) {
+                out.write(buffer, 0, length);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void copyAssets(Context context, String assetDir, String targetDir) {
+        if (TextUtils.isEmpty(assetDir) || TextUtils.isEmpty(targetDir)) {
+            return;
+        }
+        String separator = File.separator;
+        try {
+            // 获取assets目录assetDir下一级所有文件以及文件夹
+            String[] fileNames = context.getResources().getAssets().list(assetDir);
+            // 如果是文件夹(目录),则继续递归遍历
+            if (fileNames.length > 0) {
+                File targetFile = new File(targetDir);
+                if (!targetFile.exists() && !targetFile.mkdirs()) {
+                    return;
+                }
+                for (String fileName : fileNames) {
+                    copyAssets(context, assetDir + separator + fileName, targetDir + separator + fileName);
+                }
+            } else { // 文件,则执行拷贝
+                copy(context, assetDir, targetDir);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void writeStringToFile(String str) {
 //        if (!isExternalStorageWritable()) {

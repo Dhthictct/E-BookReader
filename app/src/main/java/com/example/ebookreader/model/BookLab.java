@@ -4,13 +4,19 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.os.Environment.getExternalStorageDirectory;
 
 public class BookLab {
     public static final String TEXT = "text";
@@ -20,8 +26,8 @@ public class BookLab {
     private AssetManager mAssetManager;
     private List<Book> mBookList;
     //assets中的文件名清单
-    private String[] mAssetsImageList;
-    private String[] mAssetsTextList;
+    private List<String> mAssetsImageList;
+    private List<String> mAssetsTextList;
 
 
     private BookLab(Context context) {
@@ -29,6 +35,19 @@ public class BookLab {
         loadAssetsFiles();
     }
 
+    public static List<String> getFilesAllName(String path) {
+        File file = new File(path);
+        File[] files = file.listFiles();
+        if (files == null) {
+            Log.e("error", "Empty directory");
+            return null;
+        }
+        List<String> s = new ArrayList<>();
+        for (int i = 0; i < files.length; i++) {
+            s.add(files[i].getAbsolutePath());
+        }
+        return s;
+    }
 
     public static BookLab newInstance(Context context) {
         if (sBookLab == null) {
@@ -41,26 +60,25 @@ public class BookLab {
     private void loadAssetsFiles() {
         mBookList = new ArrayList<>();
         //获取image、text中的文件名清单
-        try {
-            mAssetsImageList = mAssetManager.list(IMAGE);
-            mAssetsTextList = mAssetManager.list(TEXT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        mAssetsImageList = mAssetManager.list(IMAGE);
+//        mAssetsTextList = mAssetManager.list(TEXT);
+        String patxt = getExternalStorageDirectory().getAbsolutePath() + "/image";
+        String paimg = getExternalStorageDirectory().getAbsolutePath() + "/text";
+        mAssetsImageList = getFilesAllName(patxt);
+        mAssetsTextList = getFilesAllName(paimg);
 
-
-        for (int i = 0; i < mAssetsTextList.length; ++i) {
+        for (int i = 0; i < mAssetsTextList.size(); ++i) {
             //获取书名
-            String[] nameSplit = mAssetsTextList[i].split("_");
+            String[] nameSplit = mAssetsTextList.get(i).split("_");
             String nameSecond = nameSplit[nameSplit.length - 1];
             String bookTitle = nameSecond.replace(".txt", "");
             System.out.println("++++++++++++++++++++++++++++++++++++++++++++" + bookTitle);
             //获取封面
-            String imagePath = IMAGE + "/" + mAssetsImageList[i];
+            String imagePath = mAssetsImageList.get(i);//paimg + "/" + mAssetsImageList.get(i);
             Bitmap bookCover = loadImage(imagePath);
 
             //获取文本
-            String textPath = TEXT + "/" + mAssetsTextList[i];
+            String textPath = mAssetsTextList.get(i);//patxt + "/" + mAssetsTextList.get(i);
             String bodyText = loadText(textPath);
 
 
@@ -77,14 +95,18 @@ public class BookLab {
         InputStream in = null;
         BufferedReader reader = null;
         StringBuilder stringBuilder = new StringBuilder();
-
         try {
-            in = mAssetManager.open(path);
-            reader = new BufferedReader(new InputStreamReader(in));
-
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                stringBuilder.append(line);
+            File srcFile = new File(path);
+            InputStream instream = new FileInputStream(srcFile);
+            if (instream != null) {
+                InputStreamReader inputreader = new InputStreamReader(instream, "UTF-8");
+//            FileInputStream fr = new FileInputStream(srcFile);
+//            reader = new BufferedReader(fr);
+                reader = new BufferedReader(inputreader);
+                String line = "";
+                while ((line = reader.readLine()) != null) {
+                    stringBuilder.append(line);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,20 +128,19 @@ public class BookLab {
     private Bitmap loadImage(String path) {
         Bitmap image = null;
         InputStream in = null;
-        try {
-            in = mAssetManager.open(path);
-            image = BitmapFactory.decodeStream(in);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
+//        try {
+        //in = mAssetManager.open(path);
+        //FileInputStream stream = new FileInputStream(path);
+        //image = BitmapFactory.decodeStream(in);
+        image = BitmapFactory.decodeFile(path);
+//        } finally {
+//            try {
+//                in.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
         return image;
     }
 
