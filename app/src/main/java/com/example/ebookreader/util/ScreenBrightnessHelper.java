@@ -2,18 +2,39 @@ package com.example.ebookreader.util;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 
 public class ScreenBrightnessHelper {
 
     //设置系统屏幕亮度值,在设置之前先关闭亮度自动调节，设为手动模式
     public static void setBrightness(Context context, int value) {
-        if (isAutoBrightness(context)) {
-            closeAutoBrightness(context);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!Settings.System.canWrite(context)) {
+                    Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                    intent.setData(Uri.parse("package:" + context.getPackageName()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+
+                } else {
+//                    Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+//                    intent.setData(Uri.parse("package:" + context.getPackageName()));
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    context.startActivity(intent);
+                    if (isAutoBrightness(context)) {
+                        closeAutoBrightness(context);
+                    }
+                    ContentResolver contentResolver = context.getContentResolver();
+                    Settings.System.putInt(contentResolver,
+                            Settings.System.SCREEN_BRIGHTNESS, value);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        ContentResolver contentResolver = context.getContentResolver();
-        Settings.System.putInt(contentResolver,
-                Settings.System.SCREEN_BRIGHTNESS, value);
     }
 
 

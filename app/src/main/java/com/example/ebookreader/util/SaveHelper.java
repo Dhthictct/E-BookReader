@@ -12,10 +12,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 
-/**
- * Created by Administrator on 2016/12/16.
- */
-
 public class SaveHelper {
     public static final String THEME = "SettingPopup_Theme";
     public static final String FLIP_STYLE = "SettingPopup_FlipStyle";

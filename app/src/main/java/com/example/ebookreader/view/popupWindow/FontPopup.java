@@ -131,7 +131,7 @@ public class FontPopup extends BasePopupWindow implements View.OnClickListener {
 
             if (button.getId() == usedButton.getId()) {
 
-                button.setText("正在使用");
+                button.setText("USING");
                 button.setTextColor(usedColor);
                 GradientDrawable drawable = (GradientDrawable) button.getBackground();
                 drawable.setStroke(5, usedColor);   // 设置边框颜色
@@ -139,7 +139,7 @@ public class FontPopup extends BasePopupWindow implements View.OnClickListener {
 
             } else {
 
-                button.setText("点击使用");
+                button.setText("USE IT");
                 button.setTextColor(unUsedColor);
                 GradientDrawable drawable = (GradientDrawable) button.getBackground();
                 drawable.setStroke(5, unUsedColor);   // 设置边框颜色

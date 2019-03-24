@@ -21,6 +21,7 @@
             android:layout_height="25dp"
             android:layout_gravity="center"
             android:background="@android:drawable/button_onoff_indicator_off"
+            android:onClick="onClick"
             android:text="IMPORT BOOK" />
 
     </LinearLayout>

@@ -59,10 +59,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Automatically adjust brightness according to light"
+                android:text="Automatically adjust brightness"
                 android:textAllCaps="false"
-                android:textColor="#000000"
-                android:textSize="18sp" />
+                android:textColor="#000000" />
 
             <com.example.ebookreader.view.SwitchView
                 android:id="@+id/switch_view"

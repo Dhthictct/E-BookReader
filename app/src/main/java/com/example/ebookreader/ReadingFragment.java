@@ -6,19 +6,24 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+
 import com.example.ebookreader.model.Book;
 import com.example.ebookreader.model.BookLab;
+import com.example.ebookreader.util.ScreenBrightnessHelper;
 import com.example.ebookreader.util.bookPage.BookPageFactory;
 import com.example.ebookreader.util.bookPage.Label;
 import com.example.ebookreader.util.bookPage.ReadInfo;
@@ -28,9 +33,11 @@ import com.example.ebookreader.view.popupWindow.ContentPopup;
 import com.example.ebookreader.view.popupWindow.FontPopup;
 import com.example.ebookreader.view.popupWindow.LabelPopup;
 import com.example.ebookreader.view.popupWindow.SettingPopup;
+import com.example.ebookreader.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class ReadingFragment extends Fragment implements View.OnClickListener {
     public static final String ARG_FLIP_BOOK_ID = "ARG_FLIP_BOOK_ID ";
@@ -58,18 +65,31 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
     private LabelPopup mLabelPopup;
 
     private boolean isBottomBarShow = true;
-    private boolean isFirstRead = true;//是否是第一次进入
+    private boolean isFirstRead = true;         /* 是否是第一次进入 */
 
-    private BatteryPowerReceiver mBatteryReceiver;//电池电量广播接收者
+    private float mBackgroundAlpha = 1.0f;
+    private float mPowerPercent;                  /* 当前电池电量百分比 */
+
+    private BatteryPowerReceiver mBatteryReceiver;  /* 电池电量广播接收者 */
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            WindowManager.LayoutParams layoutParams = getActivity().getWindow().getAttributes();
+            layoutParams.alpha = (Float) msg.obj;
+            getActivity().getWindow().setAttributes(layoutParams);
+        }
+    };
+
 
     public static ReadingFragment newInstance(int bookId) {
-
         Bundle args = new Bundle();
         args.putInt(ARG_FLIP_BOOK_ID, bookId);
         ReadingFragment fragment = new ReadingFragment();
         fragment.setArguments(args);
-        return fragment;
+        return (fragment);
     }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,13 +104,15 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.fragment_reading, container, false);
         initViews(v);
         initEvents();
-        return v;
+        return (v);
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
-        //注册电量变化广播接收者
+
+        /* 注册电量变化广播接收者 */
         IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         mBatteryReceiver = new BatteryPowerReceiver();
         mContext.registerReceiver(mBatteryReceiver, filter);
@@ -100,28 +122,47 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStop() {
         super.onStop();
-        mContext.unregisterReceiver(mBatteryReceiver); //取消广播接收者
+        mContext.unregisterReceiver(mBatteryReceiver); /* 取消广播接收者 */
 
-        //SettingPopup
+        /* SettingPopup */
         SaveHelper.save(mContext, SaveHelper.THEME, mSettingPopup.getTheme());
         SaveHelper.save(mContext, SaveHelper.FLIP_STYLE, mSettingPopup.getFlipStyle());
 
-        //FlipView
+        /* FlipView */
         SaveHelper.save(mContext, SaveHelper.IS_PRE_PAGE_OVER, mFlipView.isPrePageOver());
 
-        //BookPageFactory
+        /* BookPageFactory */
         SaveHelper.saveObject(mContext, mBookId + SaveHelper.DRAW_INFO, mBookPageFactory.getReadInfo());
         SaveHelper.saveObject(mContext, SaveHelper.PAINT_INFO, mBookPageFactory.getPaintInfo());
     }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnCatalog:
-                //设置出现动画和位置
+                /* 设置出现动画和位置 */
                 mContentPopup.setAnimationStyle(R.style.pop_window_anim_style);
                 mContentPopup.showAsDropDown(mBottomBar, 0, -mContentPopup.getHeight());
+                lightOff();
                 break;
+            case R.id.btnSetting:
+
+                int xOff = (mBottomBar.getWidth() - mSettingPopup.getWidth()) / 2;
+                int yOff = -mSettingPopup.getHeight() - mBottomBar.getHeight() / 6;
+
+                mSettingPopup.setAnimationStyle(R.style.pop_window_anim_style);
+                mSettingPopup.showAsDropDown(mBottomBar, xOff, yOff);
+
+                break;
+
+            case R.id.btnFont:
+
+                mFontPopup.setAnimationStyle(R.style.pop_window_anim_style);
+                mFontPopup.showAsDropDown(mBottomBar, 0, -mFontPopup.getHeight());
+                lightOff();
+                break;
+
             case R.id.btnLabel:
                 saveLabel();
                 Toast.makeText(mContext, "Labels have been added, long press to display the list of labels", Toast.LENGTH_SHORT).show();
@@ -129,10 +170,11 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    //数据库存取书签
+
+    /* 书签存入数据库 */
     private void saveLabel() {
         Time time = new Time();
-        time.setToNow(); // 取得系统时间。
+        time.setToNow(); /* 取得系统时间。 */
         String timeStr = time.year + "/" + time.month + "/" + time.monthDay;
 
         ReadInfo readInfo = mBookPageFactory.getReadInfo();
@@ -145,8 +187,10 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         label.setTime(timeStr);
         label.setPrePageOver(mFlipView.isPrePageOver());
         label.setReadInfoStr(objectStr);
+
         label.save();
     }
+
 
     private void initDatas() {
         mContext = getActivity();
@@ -155,15 +199,15 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         mBookPageFactory = new BookPageFactory(mContext, mBookId);
 
         mBgColors = new int[]{
-                0xffe7dcbe,  //复古
-                0xffffffff,  // 常规
-                0xffcbe1cf,  //护眼
-                0xff333232  //夜间
+                0xffe7dcbe,     /*复古 */
+                0xffffffff,     /* 常规 */
+                0xffcbe1cf,     /* 护眼 */
+                0xff333232      /* 夜间 */
         };
     }
 
-    private void initEvents() {
 
+    private void initEvents() {
         if (isBottomBarShow)
             hideBottomBar();
 
@@ -173,26 +217,29 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         mFlipView.setOnPageFlippedListener(new FlipView.OnPageFlippedListener() {
             @Override
             public List<Bitmap> onNextPageFlipped() {
-                //向后读一页
-                mNextPage = mBookPageFactory.drawNextPage();//mPowerPercent);
+                /* 向后读一页 */
+
+                mNextPage = mBookPageFactory.drawNextPage(mPowerPercent);
 
                 if (mNextPage == null)
-                    return null;
+                    return (null);
 
                 mPageList.remove(0);
                 mPageList.add(mNextPage);
-                return mPageList;
+
+                return (mPageList);
             }
 
             @Override
             public List<Bitmap> onPrePageFlipped() {
-                mPrePage = mBookPageFactory.drawPrePage();//mPowerPercent);
+                mPrePage = mBookPageFactory.drawPrePage(mPowerPercent);
                 if (mPrePage == null)
-                    return null;
+                    return (null);
 
                 mPageList.remove(1);
                 mPageList.add(0, mPrePage);
-                return mPageList;
+
+                return (mPageList);
             }
 
             @Override
@@ -217,19 +264,22 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         mBottomBtns[3].setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mLabelPopup.updateUI(); //刷新书签列表
+                mLabelPopup.updateUI(); /* 刷新书签列表 */
 
                 mLabelPopup.setAnimationStyle(R.style.pop_window_anim_style);
                 mLabelPopup.showAsDropDown(mBottomBar, 0, -mLabelPopup.getHeight());
-                return true;
+
+                lightOff();
+
+                return (true);
             }
         });
+
         setPopupWindowListener();
     }
 
 
     private void setPopupWindowListener() {
-
         mSettingPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
@@ -239,14 +289,15 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         mContentPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
+                lightOn();
                 hideBottomBar();
-
             }
         });
 
         mFontPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
+                lightOn();
                 hideBottomBar();
             }
         });
@@ -254,6 +305,7 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         mLabelPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
+                lightOn();
                 hideBottomBar();
             }
         });
@@ -262,31 +314,28 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         mSettingPopup.setOnSettingChangedListener(new SettingPopup.OnSettingChangedListener() {
             @Override
             public void onSizeChanged(int progress) {
-                mPageList = mBookPageFactory.updateTextSize(progress + TEXT_SIZE_DELTA);//, mPowerPercent);
+                mPageList = mBookPageFactory.updateTextSize(progress + TEXT_SIZE_DELTA, mPowerPercent);
                 mFlipView.updateBitmapList(mPageList);
-
             }
 
             @Override
             public void onThemeChanged(int theme) {
                 setTheme(theme);
-                mPageList = mBookPageFactory.updateTheme(theme);//, mPowerPercent);
+                mPageList = mBookPageFactory.updateTheme(theme, mPowerPercent);
                 mFlipView.updateBitmapList(mPageList);
             }
 
             @Override
             public void onFlipStyleChanged(int style) {
                 mFlipView.setFlipStyle(style);
-
             }
         });
 
 
         mContentPopup.setOnContentClicked(new ContentPopup.OnContentSelectedListener() {
-
             @Override
             public void OnContentClicked(int paraIndex) {
-                mPageList = mBookPageFactory.updatePagesByContent(paraIndex);//, mPowerPercent);
+                mPageList = mBookPageFactory.updatePagesByContent(paraIndex, mPowerPercent);
                 mFlipView.setPageByContent(mPageList);
 
                 mContentPopup.dismiss();
@@ -294,20 +343,16 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         });
 
         mFontPopup.setOnFontSelectedListener(new FontPopup.OnFontSelectedListener() {
-
             @Override
             public void onTypefaceSelected(int typeIndex) {
-                mPageList = mBookPageFactory.updateTypeface(typeIndex);//, mPowerPercent);
+                mPageList = mBookPageFactory.updateTypeface(typeIndex, mPowerPercent);
                 mFlipView.updateBitmapList(mPageList);
             }
 
             @Override
             public void onColorSelected(int color) {
-
-                mPageList = mBookPageFactory.updateTextColor(color);//, mPowerPercent);
+                mPageList = mBookPageFactory.updateTextColor(color, mPowerPercent);
                 mFlipView.updateBitmapList(mPageList);
-
-
             }
         });
 
@@ -315,22 +360,19 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         mLabelPopup.setOnLabelClicked(new LabelPopup.OnLabelSelectedListener() {
             @Override
             public void OnLabelClicked(Label label) {
-
                 String objectStr = label.getReadInfoStr();
                 ReadInfo readInfo = SaveHelper.deserObject(objectStr);
                 boolean isPrePageOver = label.isPrePageOver();
 
                 mBookPageFactory.setReadInfo(readInfo);
-                mPageList = mBookPageFactory.drawCurTwoPages();//mPowerPercent);
+                mPageList = mBookPageFactory.drawCurTwoPages(mPowerPercent);
 
                 mFlipView.setPrePageOver(isPrePageOver);
                 mFlipView.updateBitmapList(mPageList);
-
             }
         });
-
-
     }
+
 
     private void setTheme(int theme) {
         mBottomBar.setBackgroundColor(mBgColors[theme]);
@@ -354,7 +396,6 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         mSettingPopup = new SettingPopup(mContext);
         mFontPopup = new FontPopup(mContext);
         mLabelPopup = new LabelPopup(mContext, mBookId);
-
     }
 
 
@@ -363,24 +404,72 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         isBottomBarShow = true;
     }
 
+
     private void hideBottomBar() {
         mBottomBar.setVisibility(View.INVISIBLE);
         isBottomBarShow = false;
     }
 
+
+    private void lightOff() {
+        /* 开启一个线程，使背景内容逐渐变暗 */
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (mBackgroundAlpha > 0.4f) {
+                    try {
+                        Thread.sleep(8);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    mBackgroundAlpha -= 0.01f;
+                    Message message = mHandler.obtainMessage();
+                    message.obj = mBackgroundAlpha;
+                    mHandler.sendMessage(message);
+                }
+            }
+        }).start();
+    }
+
+
+    private void lightOn() {
+        /* 开启一个线程，使背景内容逐渐变暗 */
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (mBackgroundAlpha < 1.0f) {
+                    try {
+                        Thread.sleep(8);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    mBackgroundAlpha += 0.01f;
+                    Message message = mHandler.obtainMessage();
+                    message.obj = mBackgroundAlpha;
+                    mHandler.sendMessage(message);
+                }
+            }
+        }).start();
+    }
+
+
     private class BatteryPowerReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            int current = intent.getExtras().getInt("level"); /* 获得当前电量 */
+            int total = intent.getExtras().getInt("scale"); /* 获得总电量 */
+            mPowerPercent = current * 1f / total;
+
+            /* 首次获取电量后初始化flipView */
             if (isFirstRead) {
                 ReadInfo readInfo = SaveHelper.getObject(mContext, mBookId + SaveHelper.DRAW_INFO);
 
                 if (readInfo != null) {
-                    mPageList = mBookPageFactory.drawCurTwoPages();
+                    mPageList = mBookPageFactory.drawCurTwoPages(mPowerPercent);
                     mFlipView.updateBitmapList(mPageList);
-
                 } else {
-                    mPageList.add(mBookPageFactory.drawNextPage());
-                    mPageList.add(mBookPageFactory.drawNextPage());
+                    mPageList.add(mBookPageFactory.drawNextPage(mPowerPercent));
+                    mPageList.add(mBookPageFactory.drawNextPage(mPowerPercent));
                     mFlipView.setPrePageOver(false);
                     mFlipView.updateBitmapList(mPageList);
                 }
@@ -389,5 +478,3 @@ public class ReadingFragment extends Fragment implements View.OnClickListener {
         }
     }
 }
-
-

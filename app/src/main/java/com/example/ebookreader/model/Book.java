@@ -69,7 +69,8 @@ public class Book {
             if (matcher.find()) {
                 int start = matcher.start();
                 int end = matcher.end();
-                String subString = para.substring(start, end);
+
+                String subString = para.substring(start, para.length());
 
                 mBookContents.add(subString);   //目录
                 mContentParaIndexs.add(paraList.indexOf(para)); //目录对应的在段落集合中的索引

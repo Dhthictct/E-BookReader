@@ -265,7 +265,7 @@ public class FlipView extends View {
                                 temp = mListener.onPrePageFlipped();
 
                             if (temp == null) {
-                                Toast.makeText(mContext, "已经是第一页了", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "It's already the first page", Toast.LENGTH_SHORT).show();
                                 return true;
                             }
 
@@ -295,7 +295,7 @@ public class FlipView extends View {
                                 temp = mListener.onNextPageFlipped();
 
                             if (temp == null) {
-                                Toast.makeText(mContext, "已经是最后一页了", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "It's already the last page.", Toast.LENGTH_SHORT).show();
                                 return true;
                             }
 

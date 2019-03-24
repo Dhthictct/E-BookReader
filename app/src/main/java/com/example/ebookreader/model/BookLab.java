@@ -54,7 +54,7 @@ public class BookLab {
             String[] nameSplit = mAssetsTextList[i].split("_");
             String nameSecond = nameSplit[nameSplit.length - 1];
             String bookTitle = nameSecond.replace(".txt", "");
-            System.out.println(bookTitle);
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++++" + bookTitle);
             //获取封面
             String imagePath = IMAGE + "/" + mAssetsImageList[i];
             Bitmap bookCover = loadImage(imagePath);
