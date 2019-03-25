@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EBookReader</string>
+    <string name="title_activity_lib">LibActivity</string>
 </resources>

@@ -3,19 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.ebookreader">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions"></uses-permission>
-
-    <!-- SDCard中创建与删除文件权限 -->
+        tools:ignore="ProtectedPermissions" /> <!-- SDCard中创建与删除文件权限 -->
     <uses-permission
         android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
-        tools:ignore="ProtectedPermissions" />
-
-    <!--读取SDCard数据权限-->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <!-- 向SDCard写入数据权限 -->
+        tools:ignore="ProtectedPermissions" /> <!-- 读取SDCard数据权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 向SDCard写入数据权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -26,7 +21,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity
+            android:name=".LibActivity"
+            android:label="@string/title_activity_lib"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".ShelfActivity"
             android:launchMode="singleTask">
@@ -36,9 +34,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ReadingActivity" />
-
     </application>
 
 </manifest>
