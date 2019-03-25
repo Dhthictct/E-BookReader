@@ -15,8 +15,6 @@ import com.example.ebookreader.model.Book;
 import com.example.ebookreader.model.BookLab;
 import com.example.ebookreader.util.SaveHelper;
 import com.example.ebookreader.view.popupWindow.FontPopup;
-import com.example.ebookreader.util.bookPage.PaintInfo;
-import com.example.ebookreader.util.bookPage.ReadInfo;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -140,10 +138,8 @@ public class BookPageFactory {
             y += mLineHeight;
             canvas.drawText(strLine, marginWidth, y, mPaint);
         }
-
         /* 绘制显示在底部的信息 */
         drawInfo(canvas, powerPercent);
-
         return (bitmap);
     }
 
@@ -151,7 +147,6 @@ public class BookPageFactory {
     public Bitmap drawPrePage(float powerPercent) {
         if (mReadInfo.isLastNext) {
             pageUp();
-
             mReadInfo.isLastNext = false;
         }
 
@@ -172,10 +167,8 @@ public class BookPageFactory {
             y += mLineHeight;
             canvas.drawText(strLine, marginWidth, y, mPaint);
         }
-
         /* 绘制显示的信息 */
         drawInfo(canvas, powerPercent);
-
         return (bitmap);
     }
 
@@ -236,7 +229,6 @@ public class BookPageFactory {
             bitmaps.add(drawPrePage(powerPercent));
             bitmaps.add(0, drawPrePage(powerPercent));
         }
-
         return (bitmaps);
     }
 

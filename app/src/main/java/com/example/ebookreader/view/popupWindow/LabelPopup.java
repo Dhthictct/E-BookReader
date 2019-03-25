@@ -143,5 +143,4 @@ public class LabelPopup extends BasePopupWindow {
 
     }
 
-
 }

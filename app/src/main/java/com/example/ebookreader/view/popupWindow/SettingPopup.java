@@ -96,7 +96,6 @@ public class SettingPopup extends BasePopupWindow implements View.OnClickListene
 
         for (Button button : mThemeBtns) {
             button.setOnClickListener(this);
-
         }
 
 
@@ -106,7 +105,6 @@ public class SettingPopup extends BasePopupWindow implements View.OnClickListene
 
         for (SeekBar seekBar : mSeekBars) {
             seekBar.setOnSeekBarChangeListener(this);
-
         }
 
 
@@ -142,17 +140,14 @@ public class SettingPopup extends BasePopupWindow implements View.OnClickListene
                 flipStyle = i;
                 break;
             }
-
         }
 
         if (theme != mTheme) {
             setTheme(theme);
-
         }
 
         if (flipStyle != mFlipStyle) {
             setFlipStyle(flipStyle);
-
         }
 
 
@@ -192,7 +187,6 @@ public class SettingPopup extends BasePopupWindow implements View.OnClickListene
         Button usedButton = mThemeBtns[mTheme];
 
         for (int i = 0; i < mThemeBtns.length; i++) {
-
             // 设置背景填充颜色
             GradientDrawable drawable = (GradientDrawable) mThemeBtns[i].getBackground();
             drawable.setColor(mPopupColors[i]);
@@ -203,9 +197,7 @@ public class SettingPopup extends BasePopupWindow implements View.OnClickListene
                 drawable.setStroke(5, strokeColor);
             } else {
                 drawable.setStroke(5, mPopupColors[i]);    //未选择button的边框颜色和填充颜色一致
-
             }
-
         }
     }
 
@@ -213,7 +205,6 @@ public class SettingPopup extends BasePopupWindow implements View.OnClickListene
     private void setCurSeekBarStyle() {
 
         for (SeekBar seekBar : mSeekBars) {
-
             //获取seekBar的layer-list drawable对象
             LayerDrawable layerDrawable = (LayerDrawable) seekBar.getProgressDrawable();
 
@@ -246,9 +237,7 @@ public class SettingPopup extends BasePopupWindow implements View.OnClickListene
                 drawable.setStroke(5, 0xffc1c0c0);
 
             }
-
         }
-
     }
 
     private void initViews() {
@@ -306,7 +295,6 @@ public class SettingPopup extends BasePopupWindow implements View.OnClickListene
             ScreenBrightnessHelper.setBrightness(mContext, progress);
 
         }
-
     }
 
     @Override

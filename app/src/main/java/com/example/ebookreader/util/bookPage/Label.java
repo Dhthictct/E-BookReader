@@ -16,7 +16,6 @@ public class Label extends DataSupport {
         return mBookId;
     }
 
-
     public boolean isPrePageOver() {
         return isPrePageOver;
     }
@@ -36,7 +35,6 @@ public class Label extends DataSupport {
     public String getReadInfoStr() {
         return readInfoStr;
     }
-
 
     public void setBookId(int bookId) {
         mBookId = bookId;

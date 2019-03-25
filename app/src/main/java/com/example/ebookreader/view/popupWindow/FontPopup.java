@@ -128,26 +128,19 @@ public class FontPopup extends BasePopupWindow implements View.OnClickListener {
         Button usedButton = mButtons[mTypeIndex];
 
         for (Button button : mButtons) {
-
             if (button.getId() == usedButton.getId()) {
-
                 button.setText("USING");
                 button.setTextColor(usedColor);
                 GradientDrawable drawable = (GradientDrawable) button.getBackground();
                 drawable.setStroke(5, usedColor);   // 设置边框颜色
 
-
             } else {
-
                 button.setText("USE IT");
                 button.setTextColor(unUsedColor);
                 GradientDrawable drawable = (GradientDrawable) button.getBackground();
                 drawable.setStroke(5, unUsedColor);   // 设置边框颜色
-
             }
-
         }
-
     }
 
     private void getFontFromAssets() {
@@ -204,8 +197,6 @@ public class FontPopup extends BasePopupWindow implements View.OnClickListener {
                 (FloatingActionButton) mConvertView.findViewById(R.id.fab_blue)
         };
 
-
     }
-
 
 }

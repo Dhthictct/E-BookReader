@@ -61,8 +61,6 @@ public abstract class BasePopupWindow extends PopupWindow {
     protected void setSize(int width, int height) {
         setWidth(width);
         setHeight((int) (height * 0.85));
-
     }
-
 
 }

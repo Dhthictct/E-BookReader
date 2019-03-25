@@ -20,10 +20,6 @@ public class ScreenBrightnessHelper {
                     context.startActivity(intent);
 
                 } else {
-//                    Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
-//                    intent.setData(Uri.parse("package:" + context.getPackageName()));
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    context.startActivity(intent);
                     if (isAutoBrightness(context)) {
                         closeAutoBrightness(context);
                     }

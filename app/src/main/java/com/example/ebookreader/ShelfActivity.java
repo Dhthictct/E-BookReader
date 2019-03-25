@@ -7,15 +7,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
@@ -28,9 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -41,19 +35,11 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 
-import com.example.ebookreader.MyX509TrustManager;
-
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Environment.getExternalStorageDirectory;
 
 public class ShelfActivity extends BasicsFragmentActivity implements View.OnClickListener {
     private static int BUFFER_SIZE = 1000000;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        onCreate(null);
-    }
 
     @Override
     protected Fragment createFragment() {
@@ -64,7 +50,6 @@ public class ShelfActivity extends BasicsFragmentActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestAllPower();
-        //String mainDir = Environment.getExternalStorageDirectory().getAbsolutePath();
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (!Settings.System.canWrite(this)) {
@@ -72,16 +57,13 @@ public class ShelfActivity extends BasicsFragmentActivity implements View.OnClic
                     intent.setData(Uri.parse("package:" + this.getPackageName()));
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     this.startActivity(intent);
-                    //finish();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String dir = getExternalStorageDirectory().getAbsolutePath();
-//        copyAssets(this, "text", dir + "/text");
-//        copyAssets(this, "image", dir + "/image");
-//        copy(this, "imageLib/02_Tarzan of the Apes.jpg", "image/02_Tarzan of the Apes.jpg");
+        //String mainDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        //String dir = getExternalStorageDirectory().getAbsolutePath();
     }
 
 
@@ -101,7 +83,6 @@ public class ShelfActivity extends BasicsFragmentActivity implements View.OnClic
         if (parameters != null) {
             url = new URL(url.toString() + buildGetParameterString(parameters));
         }
-        //InputStream rea = httpsConn.getInputStream();
         BufferedReader in = new BufferedReader(new InputStreamReader(httpsConn.getInputStream()));
         String line = null;
         StringBuffer rt = new StringBuffer();
@@ -139,14 +120,12 @@ public class ShelfActivity extends BasicsFragmentActivity implements View.OnClic
             } catch (GeneralSecurityException e1) {
                 e1.printStackTrace();
             }
-
             return null;
         }
 
         @Override
-        protected void onPostExecute(String temperature) {
-            //Update the temperature displayed
-            //((TextView) findViewById(R.id.temperature_of_the_day)).setText(temperature);
+        protected void onPostExecute(String message) {
+
         }
     }
 
@@ -248,52 +227,4 @@ public class ShelfActivity extends BasicsFragmentActivity implements View.OnClic
             e.printStackTrace();
         }
     }
-
-//    private void writeStringToFile(String str) {
-//        if (!isExternalStorageWritable()) {
-//            return;
-//        }
-//
-//        File dir = getExternalStorageDirectory();
-//        new File("/storage/emulated/0/Android/test");
-//                getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-//
-//        Log.e(TAG, "writeStringToFile: dir = " + dir.getAbsolutePath());
-//
-//        if (!dir.exists()) {
-//            dir.mkdirs();
-//        }
-//
-//        File file = new File(dir, "str.txt");
-//        if (file.exists()) {
-//            file.delete();
-//        }
-//
-//        FileOutputStream fos = null;
-//        BufferedOutputStream bos = null;
-//        try {
-//            file.createNewFile();
-//
-//            fos = new FileOutputStream(file);
-//            bos = new BufferedOutputStream(fos);
-//
-//            bos.write(str.getBytes());
-//
-//            bos.close();
-//            fos.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (bos != null) {
-//                    bos.close();
-//                }
-//                if (fos != null) {
-//                    fos.close();
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 }

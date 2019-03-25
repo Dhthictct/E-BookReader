@@ -1,16 +1,8 @@
 package com.example.ebookreader;
 
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.LightingColorFilter;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.content.pm.PackageManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -38,7 +30,7 @@ import java.util.List;
 
 import static android.os.Environment.getExternalStorageDirectory;
 
-public class LibFragment extends Fragment implements View.OnClickListener {
+public class LibFragment extends Fragment {
     private static final int BUFFER_SIZE = 1000000;
     private Context mContext;
     private List<Book> mBookList;
@@ -64,18 +56,6 @@ public class LibFragment extends Fragment implements View.OnClickListener {
         recyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
         recyclerView.setAdapter(new LibFragment.BookAdapter(mBookList));
 
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-//            case R.id.btnImportBook:
-//                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//                intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
-//                intent.addCategory(Intent.CATEGORY_OPENABLE);
-//                startActivityForResult(intent, 1);
-//                break;
-        }
     }
 
 
@@ -118,12 +98,6 @@ public class LibFragment extends Fragment implements View.OnClickListener {
 
                 Intent intent = new Intent(mContext, ShelfActivity.class);
                 startActivity(intent);
-//                String aaa=fileNames[0];
-//                ActivityManager manager =(ActivityManager)mContext.getSystemService(mContext.ACTIVITY_SERVICE);
-//                manager.restartPackage(mContext.getPackageName());
-//                final Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName());
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
             } catch (IOException e) {
                 e.printStackTrace();
             }

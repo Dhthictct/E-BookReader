@@ -4,12 +4,8 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,20 +29,6 @@ public class BookLib {
         loadAssetsFiles();
     }
 
-//    public static List<String> getFilesAllName(String path) {
-//        File file = new File(path);
-//        File[] files = file.listFiles();
-//        if (files == null) {
-//            Log.e("error", "Empty directory");
-//            return null;
-//        }
-//        List<String> s = new ArrayList<>();
-//        for (int i = 0; i < files.length; i++) {
-//            s.add(files[i].getAbsolutePath());
-//        }
-//        return s;
-//    }
-
     public static BookLib newInstance(Context context) throws IOException {
         if (sBookLib == null) {
             sBookLib = new BookLib(context);
@@ -58,8 +40,6 @@ public class BookLib {
     private void loadAssetsFiles() throws IOException {
         mBookList = new ArrayList<>();
         //获取image、text中的文件名清单
-//        mAssetsImageList = mAssetManager.list(IMAGE);
-//        mAssetsTextList = mAssetManager.list(TEXT);
 //        String patxt = getExternalStorageDirectory().getAbsolutePath() + "/imageLib";
 //        String paimg = getExternalStorageDirectory().getAbsolutePath() + "/textLIB";
         mAssetsImageList = mAssetManager.list(IMAGE);
@@ -80,7 +60,6 @@ public class BookLib {
             //获取文本
             String textPath = TEXT + "/" + mAssetsTextList[i];
             String bodyText = loadText(textPath);
-
 
             Book book = new Book(bookTitle, bookCover, bodyText);
             mBookList.add(book);

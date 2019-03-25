@@ -9,7 +9,6 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -85,12 +84,9 @@ public class BookLab {
                 //String textPath = patxt + "/" + mAssetsTextList.get(i);
                 String bodyText = loadText(textPath);
 
-
                 Book book = new Book(bookTitle, bookCover, bodyText);
                 mBookList.add(book);
-
             }
-
         }
     }
 
@@ -105,8 +101,6 @@ public class BookLab {
             InputStream instream = new FileInputStream(srcFile);
             if (instream != null) {
                 InputStreamReader inputreader = new InputStreamReader(instream, "UTF-8");
-//            FileInputStream fr = new FileInputStream(srcFile);
-//            reader = new BufferedReader(fr);
                 reader = new BufferedReader(inputreader);
                 String line = "";
                 while ((line = reader.readLine()) != null) {
@@ -124,9 +118,7 @@ public class BookLab {
                 }
             }
         }
-
         return stringBuilder.toString();
-
     }
 
     //从assets中读取图片
@@ -144,7 +136,6 @@ public class BookLab {
 //            } catch (IOException e) {
 //                e.printStackTrace();
 //            }
-//
 //        }
         return image;
     }

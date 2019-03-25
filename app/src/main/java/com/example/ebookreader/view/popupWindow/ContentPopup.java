@@ -106,5 +106,4 @@ public class ContentPopup extends BasePopupWindow {
 
     }
 
-
 }
