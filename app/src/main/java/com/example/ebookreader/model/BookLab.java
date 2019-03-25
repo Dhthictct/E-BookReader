@@ -64,29 +64,34 @@ public class BookLab {
 //        mAssetsTextList = mAssetManager.list(TEXT);
         String patxt = getExternalStorageDirectory().getAbsolutePath() + "/image";
         String paimg = getExternalStorageDirectory().getAbsolutePath() + "/text";
-        mAssetsImageList = getFilesAllName(patxt);
-        mAssetsTextList = getFilesAllName(paimg);
+        File filetxt = new File(patxt);
+        File fileimg = new File(paimg);
+        if (filetxt.exists() && fileimg.exists()) {
+            mAssetsImageList = getFilesAllName(patxt);
+            mAssetsTextList = getFilesAllName(paimg);
+            for (int i = 0; i < mAssetsTextList.size(); ++i) {
+                //获取书名
+                String[] nameSplit = mAssetsTextList.get(i).split("_");
+                String nameSecond = nameSplit[nameSplit.length - 1];
+                String bookTitle = nameSecond.replace(".txt", "");
+                System.out.println("++++++++++++++++++++++++++++++++++++++++++++" + bookTitle);
+                //获取封面
+                String imagePath = mAssetsImageList.get(i);//paimg + "/" + mAssetsImageList.get(i);
+                //String imagePath = paimg + "/" + mAssetsImageList.get(i);
+                Bitmap bookCover = loadImage(imagePath);
 
-        for (int i = 0; i < mAssetsTextList.size(); ++i) {
-            //获取书名
-            String[] nameSplit = mAssetsTextList.get(i).split("_");
-            String nameSecond = nameSplit[nameSplit.length - 1];
-            String bookTitle = nameSecond.replace(".txt", "");
-            System.out.println("++++++++++++++++++++++++++++++++++++++++++++" + bookTitle);
-            //获取封面
-            String imagePath = mAssetsImageList.get(i);//paimg + "/" + mAssetsImageList.get(i);
-            Bitmap bookCover = loadImage(imagePath);
-
-            //获取文本
-            String textPath = mAssetsTextList.get(i);//patxt + "/" + mAssetsTextList.get(i);
-            String bodyText = loadText(textPath);
+                //获取文本
+                String textPath = mAssetsTextList.get(i);//patxt + "/" + mAssetsTextList.get(i);
+                //String textPath = patxt + "/" + mAssetsTextList.get(i);
+                String bodyText = loadText(textPath);
 
 
-            Book book = new Book(bookTitle, bookCover, bodyText);
-            mBookList.add(book);
+                Book book = new Book(bookTitle, bookCover, bodyText);
+                mBookList.add(book);
+
+            }
 
         }
-
     }
 
 

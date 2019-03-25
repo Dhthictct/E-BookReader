@@ -49,13 +49,6 @@ import static android.os.Environment.getExternalStorageDirectory;
 public class ShelfActivity extends BasicsFragmentActivity implements View.OnClickListener {
     private static int BUFFER_SIZE = 1000000;
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        onCreate(null);
-//
-//    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -79,15 +72,16 @@ public class ShelfActivity extends BasicsFragmentActivity implements View.OnClic
                     intent.setData(Uri.parse("package:" + this.getPackageName()));
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     this.startActivity(intent);
+                    //finish();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         String dir = getExternalStorageDirectory().getAbsolutePath();
-        copyAssets(this, "text", dir + "/text");
-        copyAssets(this, "image", dir + "/image");
-
+//        copyAssets(this, "text", dir + "/text");
+//        copyAssets(this, "image", dir + "/image");
+//        copy(this, "imageLib/02_Tarzan of the Apes.jpg", "image/02_Tarzan of the Apes.jpg");
     }
 
 

@@ -308,7 +308,7 @@ public class BookPageFactory {
     private void drawInfo(Canvas canvas, float powerPercent) {
         Paint infoPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         infoPaint.setTextAlign(Paint.Align.LEFT);
-        infoPaint.setTextSize(32);
+        infoPaint.setTextSize(20);
         infoPaint.setColor(0xff5c5c5c);
 
         float offsetY = mHeight - marginHeight;

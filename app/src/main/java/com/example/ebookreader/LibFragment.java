@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.ebookreader.model.Book;
 import com.example.ebookreader.model.BookLib;
@@ -99,10 +100,12 @@ public class LibFragment extends Fragment implements View.OnClickListener {
 //            startActivity(intent);
 //            Intent intent = new Intent(this, ShelfActivity.class);
 //            startActivity(intent);
+            String dir = getExternalStorageDirectory().getAbsolutePath();
+            copyAssets(mContext, "text", dir + "/text");
+            copyAssets(mContext, "image", dir + "/image");
             try {
                 String[] fileNames = mContext.getResources().getAssets().list("textLib");
 
-                String dir = getExternalStorageDirectory().getAbsolutePath();
                 int inde = mBookList.indexOf(mBook);
                 String im = "imageLib/" + fileNames[inde];
                 String assimg = im.replace(".txt", ".jpg");
@@ -111,7 +114,7 @@ public class LibFragment extends Fragment implements View.OnClickListener {
                 String img = fileNames[inde].replace(".txt", ".jpg");
 
                 copy(mContext, assimg, dir + "/image/" + img);
-
+                Toast.makeText(mContext, "Please restart application refresh bookshelf information", Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(mContext, ShelfActivity.class);
                 startActivity(intent);
